@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de documentos mediante GPT</title>
+    <style>
+        body {
+            background-color: #021333;
+            color: aliceblue;
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 500px;
+            margin: auto;
+        }
+  
+        label {
+            display: block;
+            margin-top: 10px;
+            
+        }
+
+
+        textarea, 
+        
+        input[type="text"]{color: #021333;}
+        
+        input[type="file"], 
+        
+        button {
+            color: aliceblue;
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #41c5ed;
+            color: rgba(31, 32, 33, 0.854);
+            border: none;
+            padding: 15px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consulta de documentos mediante GPT</h1>
+
+    <form action="/analizar_documento" method="post" enctype="multipart/form-data">
+
+        <label for="archivo">Adjuntar Archivo:</label>
+        <input type="file" name="archivo" accept=".txt, .pdf, .doc, .docx">
+
+        <label for="pregunta">Haz tu consulta:</label>
+        <input type="text" name="pregunta" required>
+
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
