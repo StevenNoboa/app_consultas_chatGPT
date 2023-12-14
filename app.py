@@ -8,9 +8,12 @@ from langchain.chains.question_answering import load_qa_chain
 
 app = Flask(__name__)
 
-'''llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="")
+
+
+
+llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="")
 qa_chain = load_qa_chain(llm, chain_type="map_reduce")
-qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)'''
+qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
 
 
 @app.route('/')
