@@ -24,17 +24,19 @@
         label {
             display: block;
             margin-top: 10px;
-            
         }
 
+        textarea, input[type="text"] {
+            color: #021333;
+            width: 100%;
+            height: 150px;
+            resize: vertical;
+            font-family: 'Arial Narrow Bold', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-        textarea, 
-        
-        input[type="text"]{color: #021333;}
-        
-        input[type="file"], 
-        
-        button {
+        input[type="file"], button {
             color: aliceblue;
             width: 100%;
             padding: 10px;
@@ -54,20 +56,56 @@
             font-size: 16px;
             cursor: pointer;
         }
+
+        /* Estilo adicional para mejorar la apariencia */
+        p {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* Estilo para la información del proyecto */
+        .project-info {
+            position: absolute;
+            text-align: center;
+            bottom: 120px;
+            font-size: 25px;
+            margin-top: 20px;
+        }
+
+        /* Estilo para los nombres de los colaboradores */
+        .collaborators {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 15px;
+            font-style: italic;
+        }
+
     </style>
 </head>
 <body>
     <h1>Consulta de documentos mediante GPT</h1>
 
     <form action="/analizar_documento" method="post" enctype="multipart/form-data">
-
         <label for="archivo">Adjuntar Archivo:</label>
-        <input type="file" name="archivo" accept=".txt, .pdf, .doc, .docx">
+        <input type="file" name="archivo" accept=".txt, .pdf, .doc, .docx, .py">
 
         <label for="pregunta">Haz tu consulta:</label>
-        <input type="text" name="pregunta" required>
+        <textarea name="pregunta" required></textarea>
 
         <button type="submit">Enviar</button>
+
+        <!-- Información adicional -->
+        <p>Adjunta un archivo y realiza una consulta para obtener respuestas mediante GPT.</p>
+
+        <!-- Proyecto Bootcamp Data Science The Bridge -->
+        <div class="project-info">Proyecto Bootcamp Data Science The Bridge</div>
+
+        <!-- Colaboradores -->
+        <div class="collaborators">Realizado por: Maria Neches, Manuel Reina, Steven Noboa y Águeda González</div>
     </form>
+
+
+
 </body>
 </html>
