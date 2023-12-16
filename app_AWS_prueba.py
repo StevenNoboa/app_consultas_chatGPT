@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash, redirect
+from flask import Flask, request, render_template, redirect, url_for
 from langchain.chains import AnalyzeDocumentChain
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
@@ -6,24 +6,27 @@ import sqlite3
 from datetime import datetime
 import pymysql
 
-
 app = Flask(__name__)
 
-#langchain
-llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="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")
+# Configuración de la base de datos en AWS RDS
+username = "tu_usuario"
+password = "tu_contraseña"
+host = "tu_endpoint.rds.amazonaws.com"
+port = 3306
+database = "tu_base_de_datos"
+
+# Configuración de langchain
+llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="tu_clave")
 qa_chain = load_qa_chain(llm, chain_type="map_reduce")
 qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
 
-
-def insertar_registro(fecha_hora, nombre,nombre_archivo, pregunta, respuesta):
-    conn = sqlite3.connect('data/GPT_database.db')
+def insertar_registro(fecha_hora, nombre, pregunta, respuesta):
+    conn = pymysql.connect(host=host, user=username, port=port, password=password, database=database)
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO GPT_database (Registro, Nombre, Archivo, Consulta, Respuesta) VALUES (?, ?, ?, ?)',
-                   (fecha_hora, nombre,nombre_archivo, pregunta, respuesta))
+    cursor.execute('INSERT INTO GPT_database (Registro, Nombre, Consulta, Respuesta) VALUES (?, ?, ?, ?)',
+                   (fecha_hora, nombre, pregunta, respuesta))
     conn.commit()
     conn.close()
-
-
 
 @app.route('/')
 def home():
@@ -35,19 +38,16 @@ def analizar_documento():
         archivo = request.files['archivo']
         if not archivo:
             return "Error: Ningún archivo introducido"
-                
+        
+    if 'nombre' in request.form:           
         nombre = request.form.get('nombre')  # Obtener el nombre del formulario
         if not nombre:
             return "Error: Debe introducir su nombre"
         
+    if 'pregunta' in request.form:   
         pregunta = request.form.get('pregunta')
         if not pregunta:
             return "Error: La pregunta no se proporcionó"
-        
-        tipos_aceptados = {'.txt', '.doc', '.docx', '.py', '.ipynb'}
-        if archivo.filename and not any(archivo.filename.endswith(ext) for ext in tipos_aceptados):
-            flash("Error: Tipo de archivo no admitido", 'error')
-            return redirect(request.url)
 
         # Leer el archivo en fragmentos de 4KB
         fragment_size = 4096
@@ -66,14 +66,32 @@ def analizar_documento():
                 fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 # Insertar en la base de datos
-                insertar_registro(fecha_hora_actual, nombre,archivo, pregunta, str(response))
+                insertar_registro(fecha_hora_actual, nombre, pregunta, str(response))
 
                 # Procesar la respuesta si es necesario
                 return str(response)    
             except Exception as e:
                 return f"Error: {str(e)}"
 
-        
+@app.route('/consultar_registros', methods=['GET'])
+def consultar_registros():
+    try:
+        conn = pymysql.connect(host=host, user=username, port=port, password=password, database=database)
+        cursor = conn.cursor()
+
+        # Ejecuta una consulta SELECT para obtener todos los registros
+        cursor.execute('SELECT * FROM GPT_database')
+        registros = cursor.fetchall()
+
+        # Cierra la conexión
+        cursor.close()
+        conn.close()
+
+        # Renderiza la plantilla con los resultados de la consulta
+        return render_template('consultar_registros.html', registros=registros)
+    except Exception as e:
+        # Maneja cualquier error que pueda ocurrir durante la consulta
+        return f"Error: {str(e)}"
 
 if __name__ == '__main__':
     app.run(port=5000, host='0.0.0.0')
