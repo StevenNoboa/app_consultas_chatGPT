@@ -21,7 +21,13 @@ host = "gpt-database.cjlljwohiugl.eu-north-1.rds.amazonaws.com"
 port = 3306
 
 def insertar_registro(fecha_hora, nombre, pregunta, respuesta):
-    conn = sqlite3.connect('data/GPT_database.db')
+    
+    conn = pymysql.connect(host = host,
+                     user = username,
+                     password = password,
+                     cursorclass = pymysql.cursors.DictCursor
+)
+
     cursor = conn.cursor()
     cursor.execute('INSERT INTO GPT_database (Registro, Nombre, Consulta, Respuesta) VALUES (?, ?, ?, ?)',
                    (fecha_hora, nombre, pregunta, respuesta))
