@@ -10,7 +10,7 @@ import pymysql
 app = Flask(__name__)
 
 #langchain
-llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="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")
+llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="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")
 qa_chain = load_qa_chain(llm, chain_type="map_reduce")
 qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
 
@@ -19,11 +19,19 @@ username = "admin"
 password = "12345678"
 host = "gpt-database.cjlljwohiugl.eu-north-1.rds.amazonaws.com" 
 port = 3306
+database="gpt_database"
 
 def insertar_registro(fecha_hora, nombre, pregunta, respuesta):
-    conn = sqlite3.connect('data/GPT_database.db')
+    
+    conn = pymysql.connect(host = host,
+                     user = username,
+                     port=port,
+                     password = password,
+                     database=database
+                     )
+
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO GPT_database (Registro, Nombre, Consulta, Respuesta) VALUES (?, ?, ?, ?)',
+    cursor.execute('INSERT INTO gpt_table (Registro, Nombre, Consulta, Respuesta) VALUES (%s, %s, %s, %s)',
                    (fecha_hora, nombre, pregunta, respuesta))
     conn.commit()
     conn.close()
