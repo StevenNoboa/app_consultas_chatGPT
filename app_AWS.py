@@ -5,18 +5,18 @@ from langchain.chains.question_answering import load_qa_chain
 import sqlite3
 from datetime import datetime
 import pymysql
-
+from keys import *
 
 app = Flask(__name__)
 
 #langchain
-llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="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")
+llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai_api_key)
 qa_chain = load_qa_chain(llm, chain_type="map_reduce")
 qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
 
 #AWS
 username = "admin"
-password = "12345678"
+password = AWS_password
 host = "gpt-database.cjlljwohiugl.eu-north-1.rds.amazonaws.com" 
 port = 3306
 database="gpt_database"
@@ -49,7 +49,7 @@ def analizar_documento():
         if not archivo:
             return "Error: Ningún archivo introducido"
                 
-        nombre = request.form.get('nombre')  # Obtener el nombre del formulario
+        nombre = request.form.get('nombre')
         if not nombre:
             return "Error: Debe introducir su nombre"
         
@@ -57,7 +57,7 @@ def analizar_documento():
         if not pregunta:
             return "Error: La pregunta no se proporcionó"
 
-        # Leer el archivo en fragmentos de 4KB
+        # leer el archivo en fragmentos de 4KB
         fragment_size = 4096
         while True:
             parte = archivo.read(fragment_size)
@@ -70,16 +70,13 @@ def analizar_documento():
                     question=pregunta,
                 )
 
-                # Obtener la fecha y hora actual
                 fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                # Insertar en la base de datos
                 insertar_registro(fecha_hora_actual, nombre, pregunta, str(response))
 
-                # Procesar la respuesta si es necesario
-                return str(response)    
+                return render_template('respuestas.html', pregunta=pregunta, respuesta=str(response))
             except Exception as e:
-                return f"Error: {str(e)}"
+                return render_template('results.html', pregunta=pregunta, respuesta='', error=str(e))
 
         
 
