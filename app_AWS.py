@@ -49,7 +49,7 @@ def analizar_documento():
         if not archivo:
             return "Error: Ningún archivo introducido"
                 
-        nombre = request.form.get('nombre')  # Obtener el nombre del formulario
+        nombre = request.form.get('nombre')
         if not nombre:
             return "Error: Debe introducir su nombre"
         
@@ -57,7 +57,7 @@ def analizar_documento():
         if not pregunta:
             return "Error: La pregunta no se proporcionó"
 
-        # Leer el archivo en fragmentos de 4KB
+        # leer el archivo en fragmentos de 4KB
         fragment_size = 4096
         while True:
             parte = archivo.read(fragment_size)
@@ -70,14 +70,11 @@ def analizar_documento():
                     question=pregunta,
                 )
 
-                # Obtener la fecha y hora actual
                 fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                # Insertar en la base de datos
                 insertar_registro(fecha_hora_actual, nombre, pregunta, str(response))
 
-                # Procesar la respuesta si es necesario
-                return str(response)    
+                return render_template('respuestas.html', pregunta=pregunta, respuesta=str(response))
             except Exception as e:
                 return f"Error: {str(e)}"
 
