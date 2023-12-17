@@ -10,9 +10,7 @@ from key import *
 app = Flask(__name__)
 
 #langchain
-llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai_api_key)
-qa_chain = load_qa_chain(llm, chain_type="map_reduce")
-qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
+
 
 #AWS
 username = "admin"
@@ -44,6 +42,17 @@ def home():
 
 @app.route('/analizar_documento', methods=['POST'])
 def analizar_documento():
+
+    openai_api_key = request.form.get("api_key")
+    
+    if not openai_api_key:
+        openai_api_key= openai_key_private
+    
+    llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai_api_key)
+    qa_chain = load_qa_chain(llm, chain_type="map_reduce")
+    qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
+    
+
     if 'archivo' in request.files:
         archivo = request.files['archivo']
         if not archivo:
@@ -57,7 +66,7 @@ def analizar_documento():
         if not pregunta:
             return "Error: La pregunta no se proporcionó"
         
-        tipos_aceptados = {'.txt', '.doc', '.docx', '.py', '.ipynb'}
+        tipos_aceptados = {'.txt', '.py', '.ipynb'} #csv
 
         if archivo.filename and not any(archivo.filename.lower().endswith(ext) for ext in tipos_aceptados):
             error_message = "Error: Tipo de archivo no admitido"
