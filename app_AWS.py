@@ -44,13 +44,20 @@ def home():
 def analizar_documento():
 
     openai_api_key = request.form.get("api_key")
-    
-    if not openai_api_key:
+
+    if openai_api_key:
+        
+        llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai_api_key)
+        qa_chain = load_qa_chain(llm, chain_type="map_reduce")
+        qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain) 
+
+    else:
+        # return"Por favor, introduce tu OpenAI API Key."
         openai_api_key= openai_key_private
     
-    llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai_api_key)
-    qa_chain = load_qa_chain(llm, chain_type="map_reduce")
-    qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
+        llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai_api_key)
+        qa_chain = load_qa_chain(llm, chain_type="map_reduce")
+        qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
     
 
     if 'archivo' in request.files:
