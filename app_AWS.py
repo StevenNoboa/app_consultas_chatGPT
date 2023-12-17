@@ -106,12 +106,12 @@ def realizar_consulta():
     cursor = conn.cursor(pymysql.cursors.DictCursor)
 
     try:
-        if nombre and fecha:
-            consulta = f"SELECT * FROM gpt_table WHERE nombre = '{nombre}' AND fecha = '{fecha}'"
+        if nombre:# and fecha:
+            consulta = f"SELECT * FROM gpt_table WHERE nombre LIKE LOWER('%{nombre}%')" #AND DATE(fecha) = '{fecha}'"
         elif nombre:
-            consulta = f"SELECT * FROM gpt_table WHERE nombre = '{nombre}'"
-        elif fecha:
-            consulta = f"SELECT * FROM gpt_table WHERE fecha = '{fecha}'"
+            consulta = f"SELECT * FROM gpt_table WHERE nombre LIKE LOWER('%{nombre}%')"
+        #elif fecha:
+            #consulta = f"SELECT * FROM gpt_table WHERE DATE(fecha) = '{fecha}'"
         else:
             consulta = "SELECT * FROM gpt_table"
 
