@@ -82,7 +82,7 @@ def analizar_documento():
 
                 return render_template('respuestas.html', pregunta=pregunta, respuesta=str(response))
             except Exception as e:
-                return render_template('results.html', pregunta=pregunta, respuesta='', error=str(e))
+                return render_template('respuestas.html', pregunta=pregunta, respuesta='', error=str(e))
 
 @app.route('/consultas')
 def consultas():
