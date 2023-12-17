@@ -5,12 +5,13 @@ from langchain.chains.question_answering import load_qa_chain
 import sqlite3
 from datetime import datetime
 import pymysql
+from key import *
 
 
 app = Flask(__name__)
 
 #langchain
-llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key="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")
+llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=openai_api_key)
 qa_chain = load_qa_chain(llm, chain_type="map_reduce")
 qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
 
@@ -18,7 +19,7 @@ qa_document_chain = AnalyzeDocumentChain(combine_docs_chain=qa_chain)
 def insertar_registro(fecha_hora, nombre,nombre_archivo, pregunta, respuesta):
     conn = sqlite3.connect('data/GPT_database.db')
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO GPT_database (Registro, Nombre, Archivo, Consulta, Respuesta) VALUES (?, ?, ?, ?)',
+    cursor.execute('INSERT INTO GPT_database (Registro, Nombre, Archivo, Consulta, Respuesta) VALUES (?, ?, ?, ?, ?)',
                    (fecha_hora, nombre,nombre_archivo, pregunta, respuesta))
     conn.commit()
     conn.close()
@@ -45,9 +46,10 @@ def analizar_documento():
             return "Error: La pregunta no se proporcionó"
         
         tipos_aceptados = {'.txt', '.doc', '.docx', '.py', '.ipynb'}
-        if archivo.filename and not any(archivo.filename.endswith(ext) for ext in tipos_aceptados):
-            flash("Error: Tipo de archivo no admitido", 'error')
-            return redirect(request.url)
+
+        if archivo.filename and not any(archivo.filename.lower().endswith(ext) for ext in tipos_aceptados):
+            error_message = "Error: Tipo de archivo no admitido"
+            return render_template('index.html', error_message=error_message)
 
         # Leer el archivo en fragmentos de 4KB
         fragment_size = 4096
@@ -66,7 +68,7 @@ def analizar_documento():
                 fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 # Insertar en la base de datos
-                insertar_registro(fecha_hora_actual, nombre,archivo, pregunta, str(response))
+                insertar_registro(fecha_hora_actual, nombre,archivo.filename, pregunta, str(response))
 
                 # Procesar la respuesta si es necesario
                 return str(response)    
@@ -77,3 +79,6 @@ def analizar_documento():
 
 if __name__ == '__main__':
     app.run(port=5000, host='0.0.0.0')
+
+
+

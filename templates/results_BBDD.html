@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de la Consulta</title>
+    <style>
+        body {
+            background-color: #021333;
+            color: aliceblue;
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #41c5ed;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #41c5ed;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #41c5ed;
+            color: rgba(31, 32, 33, 0.854);
+        }
+
+        /* Botón para volver al inicio */
+        .button-volver {
+            display: block;
+            margin-top: 20px;
+            background-color: #41c5ed;
+            color: rgba(31, 32, 33, 0.854);
+            border: none;
+            padding: 15px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Resultados de la Consulta</h1>
+
+    {% if resultados %}
+        <table>
+            <tr>
+                <th>Registro</th>
+                <th>Nombre</th>
+                <th>Archivo</th>
+                <th>Consulta</th>
+                <th>Respuesta</th>
+            </tr>
+            {% for resultado in resultados %}
+                <tr>
+                    <td>{{ resultado.Registro }}</td>
+                    <td>{{ resultado.Nombre }}</td>
+                    <td>{{ resultado.Archivo }}</td>
+                    <td>{{ resultado.Consulta }}</td>
+                    <td>{{ resultado.Respuesta }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No se encontraron resultados.</p>
+    {% endif %}
+
+    <!-- Volver al inicio -->
+    <a href="/" class="button-volver">Volver al Inicio</a>
+</body>
+</html>

@@ -93,6 +93,18 @@
             font-style: italic;
         }
 
+        .error-message {
+        color: red;
+        font-size: 18px;
+        margin-top: 10px;
+        }
+
+        .button-consulta {
+        color: white;
+        font-size: 18px;
+        margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -102,13 +114,20 @@
         <label for="nombre">Nombre:</label>
         <input type="text" name="nombre" required>
 
-        <label for="archivo">Adjuntar Archivo:</label>
-        <input type="file" name="archivo" accept=".txt, .doc, .docx, .py, .ipynb">
+        <label for="archivo">Adjuntar archivo de texto:</label>
+        <input type="file" name="archivo" accept="*">
 
         <label for="pregunta">Haz tu consulta:</label>
         <textarea name="pregunta" required></textarea>
 
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+        
         <button type="submit">Enviar</button>
+
+        <!-- Botón para redirigir a la página de consultas -->
+        <a href="/consultas" class="button-consulta">Consultar Base de Datos</a>
 
         <!-- Información adicional -->
         <p>Adjunta un archivo y realiza una consulta para obtener respuestas mediante GPT.</p>

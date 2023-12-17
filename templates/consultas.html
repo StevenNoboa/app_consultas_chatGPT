@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas en la Base de Datos</title>
+    <style>
+        body {
+            background-color: #021333;
+            color: aliceblue;
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 500px;
+            margin: auto;
+        }
+  
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input[type="text"], input[type="date"], button {
+            color: #021333;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #41c5ed;
+            color: rgba(31, 32, 33, 0.854);
+            border: none;
+            padding: 15px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* Resultados de la consulta */
+        .resultados {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #41c5ed;
+            color: rgba(31, 32, 33, 0.854);
+        }
+
+        /* Botón de volver */
+        .button-volver {
+            background-color: #41c5ed;
+            color: rgba(31, 32, 33, 0.854);
+            border: none;
+            width: 5%;
+            position: fixed;
+            padding: 15px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consultas en la Base de Datos</h1>
+
+    <!-- Formulario para introducir parámetros de consulta -->
+    <form action="/realizar_consulta" method="get">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre">
+
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha">
+
+        <button type="submit">Realizar Consulta</button>
+    </form>
+
+    <!-- Resultados de la consulta (puedes mostrarlos en una tabla, por ejemplo) -->
+    <div class="resultados">
+        {% if resultados %}
+            <h2>Resultados:</h2>
+            <table>
+                <tr>
+                    <!-- ... (cabezas de columna) ... -->
+                </tr>
+                {% for resultado in resultados %}
+                    <tr>
+                        <!-- ... (datos de la fila) ... -->
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+
+    <!-- Volver al inicio -->
+    <a href="/" class="button-volver">Volver al Inicio</a>
+</body>
+</html>
+

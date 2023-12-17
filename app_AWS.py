@@ -5,7 +5,7 @@ from langchain.chains.question_answering import load_qa_chain
 import sqlite3
 from datetime import datetime
 import pymysql
-from keys import *
+from key import *
 
 app = Flask(__name__)
 
@@ -21,7 +21,7 @@ host = "gpt-database.cjlljwohiugl.eu-north-1.rds.amazonaws.com"
 port = 3306
 database="gpt_database"
 
-def insertar_registro(fecha_hora, nombre, pregunta, respuesta):
+def insertar_registro(fecha_hora, nombre,nombre_archivo, pregunta, respuesta):
     
     conn = pymysql.connect(host = host,
                      user = username,
@@ -31,8 +31,8 @@ def insertar_registro(fecha_hora, nombre, pregunta, respuesta):
                      )
 
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO gpt_table (Registro, Nombre, Consulta, Respuesta) VALUES (%s, %s, %s, %s)',
-                   (fecha_hora, nombre, pregunta, respuesta))
+    cursor.execute('INSERT INTO gpt_table (Registro, Nombre, Archivo, Consulta, Respuesta) VALUES (%s, %s, %s, %s, %s)',
+                   (fecha_hora, nombre,nombre_archivo, pregunta, respuesta))
     conn.commit()
     conn.close()
 
@@ -56,6 +56,12 @@ def analizar_documento():
         pregunta = request.form.get('pregunta')
         if not pregunta:
             return "Error: La pregunta no se proporcionó"
+        
+        tipos_aceptados = {'.txt', '.doc', '.docx', '.py', '.ipynb'}
+
+        if archivo.filename and not any(archivo.filename.lower().endswith(ext) for ext in tipos_aceptados):
+            error_message = "Error: Tipo de archivo no admitido"
+            return render_template('index.html', error_message=error_message)
 
         # leer el archivo en fragmentos de 4KB
         fragment_size = 4096
@@ -72,13 +78,55 @@ def analizar_documento():
 
                 fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-                insertar_registro(fecha_hora_actual, nombre, pregunta, str(response))
+                insertar_registro(fecha_hora_actual, nombre,archivo.filename, pregunta, str(response))
 
                 return render_template('respuestas.html', pregunta=pregunta, respuesta=str(response))
             except Exception as e:
                 return render_template('results.html', pregunta=pregunta, respuesta='', error=str(e))
 
-        
+@app.route('/consultas')
+def consultas():
+    
+    return render_template('consultas.html')
+
+@app.route('/realizar_consulta', methods=['GET'])
+def realizar_consulta():
+    nombre = request.args.get('nombre')
+    fecha = request.args.get('fecha')
+
+    # Configuración de la conexión a la base de datos
+    conn = pymysql.connect(
+        host=host,
+        user=username,
+        port=port,
+        password=password,
+        database=database
+    )
+
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    try:
+        if nombre and fecha:
+            consulta = f"SELECT * FROM gpt_table WHERE nombre = '{nombre}' AND fecha = '{fecha}'"
+        elif nombre:
+            consulta = f"SELECT * FROM gpt_table WHERE nombre = '{nombre}'"
+        elif fecha:
+            consulta = f"SELECT * FROM gpt_table WHERE fecha = '{fecha}'"
+        else:
+            consulta = "SELECT * FROM gpt_table"
+
+        cursor.execute(consulta)
+        resultados = cursor.fetchall()
+    except Exception as e:
+        # Manejar errores, por ejemplo, puedes imprimir el error
+        print(f"Error al ejecutar la consulta: {str(e)}")
+        resultados = []
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('results_BBDD.html', resultados=resultados)      
 
 if __name__ == '__main__':
     app.run(port=5000, host='0.0.0.0')
