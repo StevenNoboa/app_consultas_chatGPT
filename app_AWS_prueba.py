@@ -38,6 +38,7 @@ def insertar_registro(fecha_hora, nombre,nombre_archivo, pregunta, respuesta):
 
 
 
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -83,50 +84,7 @@ def analizar_documento():
                 return render_template('respuestas.html', pregunta=pregunta, respuesta=str(response))
             except Exception as e:
                 return render_template('results.html', pregunta=pregunta, respuesta='', error=str(e))
-
-@app.route('/consultas')
-def consultas():
-    
-    return render_template('consultas.html')
-
-@app.route('/realizar_consulta', methods=['GET'])
-def realizar_consulta():
-    nombre = request.args.get('nombre')
-    fecha = request.args.get('fecha')
-
-    # Configuración de la conexión a la base de datos
-    conn = pymysql.connect(
-        host=host,
-        user=username,
-        port=port,
-        password=password,
-        database=database
-    )
-
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-
-    try:
-        if nombre and fecha:
-            consulta = f"SELECT * FROM gpt_table WHERE nombre = '{nombre}' AND fecha = '{fecha}'"
-        elif nombre:
-            consulta = f"SELECT * FROM gpt_table WHERE nombre = '{nombre}'"
-        elif fecha:
-            consulta = f"SELECT * FROM gpt_table WHERE fecha = '{fecha}'"
-        else:
-            consulta = "SELECT * FROM gpt_table"
-
-        cursor.execute(consulta)
-        resultados = cursor.fetchall()
-    except Exception as e:
-        # Manejar errores, por ejemplo, puedes imprimir el error
-        print(f"Error al ejecutar la consulta: {str(e)}")
-        resultados = []
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    return render_template('results_BBDD.html', resultados=resultados)      
+   
 
 if __name__ == '__main__':
     app.run(port=5000, host='0.0.0.0')
