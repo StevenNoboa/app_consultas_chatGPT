@@ -8,12 +8,9 @@ from key import *
 
 app = Flask(__name__)
 
-#langchain
-
-
 #AWS
 username = "admin"
-password = "12345678"
+password = AWS_password
 host = "gpt-database.cjlljwohiugl.eu-north-1.rds.amazonaws.com" 
 port = 3306
 database="gpt_database"
@@ -142,4 +139,4 @@ def realizar_consulta():
     return render_template('results_BBDD.html', resultados=resultados)      
 
 if __name__ == '__main__':
-    app.run(port=3306, host='0.0.0.0')
+    app.run(port=5000, host='0.0.0.0')
