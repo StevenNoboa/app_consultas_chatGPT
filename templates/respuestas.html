@@ -6,7 +6,7 @@
     <title>Respuesta de GPT</title>
     <style>
         body {
-            background-color: #021333; 
+            background-color: #000000; 
             color: #FFFFFF;
             font-family: 'Arial', sans-serif;
             margin: 0;  /* remove default margin */
@@ -19,10 +19,26 @@
         }
 
         h1 {
-            color: #41c5ed;  
+            color: #84aab6;  
+        }
+
+        /* Botón de volver */
+        .button-volver {
+            display: block;
+            margin:  auto;
+            margin-top: 30px;
+            background-color: #b1ccd4;
+            color: rgba(0, 0, 0, 0.854);
+            border: none;
+            width: 20%;
+            padding: 15px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
-    <!-- xxx -->
 </head>
 <body>
     <div>
@@ -31,5 +47,7 @@
         <p><strong>Respuesta:</strong> {{ respuesta }}</p>
         <!-- xxx -->
     </div>
+     <!-- Volver al inicio -->
+     <a href="/" class="button-volver">Volver al Inicio</a>
 </body>
 </html>
