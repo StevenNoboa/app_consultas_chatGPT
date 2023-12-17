@@ -2,7 +2,6 @@ from flask import Flask, request, render_template
 from langchain.chains import AnalyzeDocumentChain
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
-import sqlite3
 from datetime import datetime
 import pymysql
 from key import *
@@ -14,7 +13,7 @@ app = Flask(__name__)
 
 #AWS
 username = "admin"
-password = AWS_password
+password = "12345678"
 host = "gpt-database.cjlljwohiugl.eu-north-1.rds.amazonaws.com" 
 port = 3306
 database="gpt_database"
@@ -110,7 +109,6 @@ def realizar_consulta():
     nombre = request.args.get('nombre')
     fecha = request.args.get('fecha')
 
-    # Configuración de la conexión a la base de datos
     conn = pymysql.connect(
         host=host,
         user=username,
@@ -134,7 +132,6 @@ def realizar_consulta():
         cursor.execute(consulta)
         resultados = cursor.fetchall()
     except Exception as e:
-        # Manejar errores, por ejemplo, puedes imprimir el error
         print(f"Error al ejecutar la consulta: {str(e)}")
         resultados = []
 
@@ -145,4 +142,4 @@ def realizar_consulta():
     return render_template('results_BBDD.html', resultados=resultados)      
 
 if __name__ == '__main__':
-    app.run(port=5000, host='0.0.0.0')
+    app.run(port=3306, host='0.0.0.0')
