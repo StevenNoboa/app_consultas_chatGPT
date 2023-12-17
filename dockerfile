@@ -6,6 +6,6 @@ COPY . /app
 
 RUN pip install -r requirements.txt
 
-EXPOSE 3306
+EXPOSE 5000
 
 CMD ["python", "app_AWS.py"]

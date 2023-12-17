@@ -142,4 +142,4 @@ def realizar_consulta():
     return render_template('results_BBDD.html', resultados=resultados)      
 
 if __name__ == '__main__':
-    app.run(port=3306, host='0.0.0.0')
+    app.run(port=5000, host='0.0.0.0')
