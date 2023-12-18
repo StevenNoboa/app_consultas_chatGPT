@@ -8,9 +8,6 @@ from key import *
 
 app = Flask(__name__)
 
-#langchain
-
-
 #AWS
 username = "admin"
 password = AWS_password
