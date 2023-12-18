@@ -33,12 +33,12 @@ cd app_consultas_chatGPT
 ### Ejecución de la aplicación
 Construye la imagen de Docker:
 ```
-docker build -t manuelreina/app_aws:v2 .
+docker build -t manuelreina/app_gpt:v1 .
 ```
 Ejecuta el contenedor Docker:
 
 ```
-docker run -p 5000:5000 manuelreina/app_aws:v2
+docker run -p 5000:5000 manuelreina/app_gpt:v1
 ```
 
 La aplicación estará accesible en http://localhost:5000
