@@ -1,3 +1,5 @@
+![img](documentacion/img/dark_library.png)
+
 # Proyecto de base de datos con AWS RDS, Flask y OpenAI
 
 Este proyecto fue desarrollado por un equipo de cuatro estudiantes de Data Science, compuesto por Steven Noboa, María Neches, Manuel Reina y Águeda González. El objetivo principal de la aplicación es conectar una base de datos SQL alojada en AWS con Langchaim de OpenAI utilizando Flask (python).
